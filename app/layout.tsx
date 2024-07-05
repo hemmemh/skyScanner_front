@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./styles/index.scss";
 import { NextUIProvider } from "@nextui-org/system";
-import { Providers } from "./providers";
+import { Providers } from "../components/app/providers/providers";
 
 
 export const metadata: Metadata = {

@@ -1,0 +1,18 @@
+.main{display: flex;
+flex-direction: column;
+min-width: 240px;
+}
+.titleAccordion{
+    color: var(--color-black) !important;
+}
+
+.slider_values{
+    display: flex;
+}
+
+.text{
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5rem;
+}
+

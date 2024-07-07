@@ -3,9 +3,8 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 export const API_URL = 'https://localhost:3000'
 
 const apiInstance = axios.create({
-    baseURL: 'https://some-domain.com/api/',
+    baseURL: 'http://localhost:5000/api/',
     timeout: 1000,
-    headers: {'X-Custom-Header': 'foobar'}
   });
 
 
@@ -17,6 +16,14 @@ const apiInstance = axios.create({
   }, (error) => {
     return Promise.reject(error)
   })
+
+
+  apiInstance.interceptors.response.use((response)=>{
+   return response.data
+  })
+
+
+  
 
 
 

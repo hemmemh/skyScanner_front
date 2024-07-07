@@ -1,9 +1,9 @@
 
 import apiInstance from '../base'
-import {ICompany } from './types'
+import {ISeatClass } from './types'
 
-const BASE_URL = 'city'
+const BASE_URL = 'seat_class'
 
-export const createCity = (name:string): Promise<ICompany> => {
-    return apiInstance.post(`${BASE_URL}`, {name})
+export const createSeatClass = (name:string, multiplier:number): Promise<ISeatClass> => {
+    return apiInstance.post(`${BASE_URL}`, {name, multiplier })
 }

@@ -1,0 +1,1 @@
+export { sliceCity } from './city'

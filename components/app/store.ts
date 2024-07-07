@@ -1,7 +1,28 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { Middleware, Tuple, combineReducers, configureStore } from '@reduxjs/toolkit'
+import { AirBusReducer } from '../entities/airBus'
+import { TripReducer } from '../entities/TripList';
+
+
+
+const logger: Middleware = (store) => (next) => (action) => {
+  console.log('Dispatching action:', action);
+  let result = next(action);
+  console.log('Next state:', store.getState());
+  console.log('result ', result );
+  return result;
+};
+
+
+const rootRecucer = combineReducers({
+  airBusList: AirBusReducer,
+  tripList:TripReducer
+})
+
 
 export const store = configureStore({
-  reducer: {},
+  reducer: rootRecucer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(logger)
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

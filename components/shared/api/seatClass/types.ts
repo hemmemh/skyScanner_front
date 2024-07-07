@@ -1,7 +1,9 @@
+import { ITrip } from "../trip/types";
 
-export interface ICompany {
+export interface ISeatClass {
     uid: string,
     name: string,
-    trips: Trip[]
+    multiplie:number,
+    trips: ITrip[]
 }
 

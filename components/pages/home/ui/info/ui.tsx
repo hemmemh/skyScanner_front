@@ -33,7 +33,7 @@ export const Info = () => {
           <div className={styles.content}>
             <div className={styles.accordionContent}>
               {accordionContent.map(el=>
-                            <Accordion sx={accordionStyle}>
+                            <Accordion sx={accordionStyle}  key={el.title}>
                             <AccordionSummary
                               expandIcon={<IoIosArrowDown />}
                               aria-controls="panel1-content"
@@ -52,7 +52,7 @@ export const Info = () => {
             </div>
             <div className={styles.accordionContent}>
             {accordionContent.map(el=>
-                            <Accordion sx={accordionStyle}>
+                            <Accordion sx={accordionStyle} key={el.title}>
                             <AccordionSummary
                               expandIcon={<IoIosArrowDown />}
                               aria-controls="panel1-content"

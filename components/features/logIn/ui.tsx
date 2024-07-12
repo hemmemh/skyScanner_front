@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { FC, useEffect } from 'react'
 import styles from './styles.module.scss';
 import { Button, FormControl, IconButton, Input, MenuItem, Modal, Select, SelectChangeEvent } from '@mui/material';
 import Image from 'next/image';
@@ -14,13 +14,24 @@ const closeStyle={
    right:'10px'
 }
 
-export const LogIn = () => {
-  const [open, setOpen] = React.useState(true);
-  const handleOpen = () => {
-    setOpen(true);
-  };
+interface LogIn {
+  onChange:(bool:boolean)=>void
+  value:boolean
+}
+
+export const LogIn:FC<LogIn> = ({onChange, value}) => {
+  const [open, setOpen] = React.useState(value);
+
+  useEffect(() => {
+    
+    setOpen(value)
+   
+  }, [value])
+  
+
   const handleClose = () => {
     setOpen(false);
+    onChange(false)
   };
 
   return (
@@ -43,7 +54,7 @@ export const LogIn = () => {
       <div className={styles.button}>
         <Button  variant="contained"  sx={{width:'100%'}}>Войти</Button>
       </div>
-      <IconButton sx={closeStyle}><IoMdClose /></IconButton>
+      <IconButton onClick={handleClose} sx={closeStyle}><IoMdClose /></IconButton>
     </div>
   </Modal>
 

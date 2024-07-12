@@ -1,6 +1,8 @@
 import { Middleware, Tuple, combineReducers, configureStore } from '@reduxjs/toolkit'
 import { AirBusReducer } from '../entities/airBus'
 import { TripReducer } from '../entities/TripList';
+import { CityReducer } from '../entities/cityList';
+import { SeatClassReducer } from '../entities/seatClassList';
 
 
 
@@ -15,7 +17,9 @@ const logger: Middleware = (store) => (next) => (action) => {
 
 const rootRecucer = combineReducers({
   airBusList: AirBusReducer,
-  tripList:TripReducer
+  tripList:TripReducer,
+  cityList:CityReducer,
+  seatClassList:SeatClassReducer,
 })
 
 

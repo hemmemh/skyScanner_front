@@ -1,4 +1,4 @@
-import { ITrip } from "../trip/types";
+import { ITrip } from "../trip";
 
 export interface ICompany {
     uid: string,

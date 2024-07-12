@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import styles from './styles.module.scss';
 import logo from "@/public/logo.svg";
 import { MdLanguage } from "react-icons/md";
@@ -7,13 +8,23 @@ import { FaUser } from "react-icons/fa";
 import Image from 'next/image';
 import { IconButton } from '@mui/material';
 import { LogIn } from '@/components/features/logIn';
-
+import { useRouter } from 'next/navigation';
 export const Header = () => {
+
+   const router =  useRouter()
+   const [openLogIn, setOpenLogIn] = useState(false)
+
+   useEffect(() => {
+      console.log('aa', openLogIn);
+      
+   }, [openLogIn])
+   
+  
   return (
     <div className={styles.header}>
                   <div className='container'>
                   <div className={styles.body}>
-            <div className={styles.logo}>
+            <div onClick={()=>router.push('home')} className={styles.logo}>
             <Image
                   src={logo}
                   width={173}
@@ -29,7 +40,7 @@ export const Header = () => {
             <IconButton color='inherit'   aria-label="language">
             <MdFavorite color='white' fontSize={25}/>
             </IconButton>
-            <IconButton  color='inherit'  aria-label="language">
+            <IconButton onClick={()=>setOpenLogIn(true)}  color='inherit'  aria-label="language">
             <FaUser color='white' fontSize={25}/>
             </IconButton>
          
@@ -39,7 +50,7 @@ export const Header = () => {
             </div>
                   </div>
                   </div>
-      <LogIn/>
+      <LogIn value={openLogIn} onChange={setOpenLogIn}/>
     </div>
   )
 }

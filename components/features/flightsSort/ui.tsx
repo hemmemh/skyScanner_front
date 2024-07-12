@@ -2,12 +2,18 @@
 import React from 'react'
 import styles from './styles.module.scss';
 import { FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+
+const sortList = ['cheapFirst', 'fastFirst']
+
+
 export const FlightsSort = () => {
 
-  const [age, setAge] = React.useState('');
+  const [sort, setSort] = React.useState(sortList[0]);
+
+
 
   const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value);
+    setSort(event.target.value);
   };
 
   return (
@@ -17,14 +23,13 @@ export const FlightsSort = () => {
       <div className={styles.select_label}>sortby</div>
       <FormControl sx={{ m: 1, minWidth: 120 }}>
         <Select
-          value={age}
+          value={sort}
           onChange={handleChange}
           displayEmpty
           inputProps={{ 'aria-label': 'Without label' }}
         >
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          {sortList.map(el=>   <MenuItem key={el} value={el}>{el}</MenuItem>)}
+       
         </Select>
       </FormControl>
       </div>

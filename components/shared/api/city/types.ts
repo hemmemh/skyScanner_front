@@ -1,8 +1,9 @@
-import { ITrip } from "../trip/types";
+import { ITrip } from "../trip";
 
 export interface ICity {
     uid: string,
     name: string,
-    trips: ITrip[]
+    departure_trips: ITrip[],
+    arrival_trips: ITrip[],
 }
 

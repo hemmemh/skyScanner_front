@@ -10,21 +10,22 @@ import dayjs, { Dayjs } from 'dayjs';
 
 interface Autocomplete {
 
-
+  value?:Dayjs
   className?:string;
   label?:string
   onChange:(value:Dayjs)=>void
 }
 
-export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, label}) => {
+export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, label, value = dayjs()}) => {
 
-  const [day, setDay] = useState(dayjs())
+  const [day, setDay] = useState(value)
   const [calendarOpen, setCalendarOpen] = useState(false)
   const calendarRef = useRef(null)
   const caseRef = useRef(null)
   
   const calendarStyle = {
     display:calendarOpen ? 'block' : 'none', 
+    boxShadow:'0px 5px 10px 2px rgba(34, 60, 80, 0.2)',
     position:'absolute', 
     background:'#fff', 
     top:'calc(100% + 2px)', 
@@ -75,6 +76,8 @@ export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, la
      document.removeEventListener('click',closeCalendar)
    }
  }, [])
+
+
 
 
 

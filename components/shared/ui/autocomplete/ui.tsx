@@ -4,30 +4,32 @@ import styles from './styles.module.scss';
 import clsx from 'clsx';
 import { Input } from '../input';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { BiSolidPlaneAlt } from 'react-icons/bi';
 
 
 interface Autocomplete {
 
-  children: ReactNode;
+
+  items:string[]
   className?:string;
   label:string;
   placeholder:string
   onChange:(value:string)=>void
 }
 
-export const Autocomplete:FC<Autocomplete> = ({children,className = 'default', label, onChange, placeholder = ''}) => {
+export const Autocomplete:FC<Autocomplete> = ({className = 'default', label, onChange, placeholder = '', items}) => {
 
   const [input, setInput] = useState('')
-  const values:React.ReactNode[]= Children.toArray(children)
-  const [filrerValues, setFilterValues] = useState<Array<React.ReactNode>>(values)
+  const [values, setValues] = useState<string[]>(items)
+  const [filrerValues, setFilterValues] = useState<string[]>(values)
   const [popperOpen, setPopperOpen] = useState(false)
   const autocompleteRef = useRef(null)
   const popperRef = useRef(null)
 
-  const valueClick = (event:EventTarget)=>{
-    const target  = event as HTMLElement
-    setInput(target.innerText)
-    onChange(target.innerText)
+  const valueClick = (event:string)=>{
+
+    setInput(event)
+    onChange(event)
   }
 
   const filterPopper = (value:string)=>{
@@ -56,6 +58,13 @@ export const Autocomplete:FC<Autocomplete> = ({children,className = 'default', l
      document.removeEventListener('click',setPopper)
    }
  }, [])
+
+
+ useEffect(() => {
+  setValues(items)
+  setFilterValues(items)
+ }, [items])
+ 
 
 
 
@@ -95,8 +104,13 @@ export const Autocomplete:FC<Autocomplete> = ({children,className = 'default', l
                      <div ref={popperRef} className={clsx(styles.popper, {[styles.visible]:popperOpen})}>
                       <div className={clsx(styles.popper__body)}>
                       {filrerValues.length === 0 && <div> нет значений</div>}
-                       {filrerValues.map(el=>
-                         <div onClick={(e)=>valueClick(e.target)}>{el}</div>
+                       {filrerValues.map((el, id)=>
+                         <div className={clsx(styles.popper__item, {[styles.activeItem]:el === input})} onClick={(e)=>valueClick(el)} key={id}>
+                                     
+                                           <BiSolidPlaneAlt/>
+                                           <div className={styles.popper__text}>{el}</div>
+                                       
+                         </div>
                        )}
                       </div>
                      </div>

@@ -6,16 +6,32 @@ import React, { useEffect } from 'react'
 import styles from './styles.module.scss';
 import { useAppDispatch, useAppSelector } from '@/components/shared/lib/store';
 import { fetchTripList, selectTripList } from '@/components/entities/TripList';
+import { useParams, useSearchParams } from 'next/navigation'
 export const FlightsBody = () => {
 
   const useDispatch = useAppDispatch()
 
+  const searchParams = useSearchParams()
+
+
+
+
   const tripList = useAppSelector(selectTripList)
 
 
+
   useEffect(() => {
+     const params:any = {} 
+     for (const [key, value] of searchParams.entries()) {
+      params[key] = value
+      console.log(`${key}, ${value}`, searchParams.entries());
+    }
+    
+     console.log('params',  params);
+     
+   
         
-    useDispatch(fetchTripList())
+    useDispatch(fetchTripList(params))
     return () => {
     
     }

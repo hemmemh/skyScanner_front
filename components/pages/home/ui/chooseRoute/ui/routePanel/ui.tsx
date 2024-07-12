@@ -10,24 +10,34 @@ import clsx from 'clsx';
 import { Button } from '@mui/material';
 import { Autocomplete } from '@/components/shared/ui/autocomplete';
 import { DatePicker } from '@/components/shared/ui/datePicker/ui';
+import { SeatPicker } from '@/components/shared/ui/seatPicker';
+import { useAppDispatch, useAppSelector } from '@/components/shared/lib/store';
+import { fetchCityList, selectCityList } from '@/components/entities/cityList';
+import { fetchSeatClassList, selectSeatClassList } from '@/components/entities/seatClassList';
+import { ISeatClass } from '@/components/shared/api/seatClass';
+import { useRouter } from 'next/navigation';
 
 
 
-type panelInputLabel = 'from' | 'to' | 'depart' | 'return'
+type panelInputLabel = 'from' | 'to' | 'depart' | 'return' | 'seatNumber' | 'seatClass'
 
 interface Info{
   from:string,
   to:string,
-  depart:dayjs.Dayjs
-  return:dayjs.Dayjs
+  depart:number,
+  return:number,
+  seatNumber:number,
+  seatClass:string
 }
 
 
 const infoDefault:Info = {
   from:'',
   to:'',
-  depart: dayjs(),
-  return:dayjs().add(1,'day')
+  depart: dayjs().valueOf(),
+  return:dayjs().add(1,'day').valueOf(),
+  seatNumber:1,
+  seatClass: ''
 }
 
 const  citiesDefault  ={
@@ -38,38 +48,62 @@ const  citiesDefault  ={
 
 
 export const RoutePanel = () => {
+  const useDispatch = useAppDispatch()
+  const router = useRouter()
+  
+  useEffect(() => {
+      useDispatch(fetchCityList())
+      useDispatch(fetchSeatClassList())
+  }, [])
+  
 
 const [info, setInfo] = useState<Info>(infoDefault)
 
-
-const onInfoChange = (type:panelInputLabel, value:string)=>{
+const cityList = useAppSelector(selectCityList)
+const seatClassList = useAppSelector(selectSeatClassList)
+const onInfoChange = (type:panelInputLabel, value:string | number | ISeatClass)=>{
   setInfo(prev=>({...prev, [type]:value}))
 }
 
 
+const onSeatChange = (seatNumber:number, seatClass:string)=>{
+  console.log('seatClass', seatClass);
+  
+  onInfoChange('seatNumber',seatNumber) 
+  onInfoChange('seatClass',seatClass) 
+
+}
+
+const onCityChange = (name:string, type:'from' | 'to')=>{
+const item = cityList.find(el=>el.name === name)
+if (item && type === 'from') {
+  info.from = item.uid
+}
+if (item && type === 'to') {
+  info.to = item.uid
+}
+
+}
+
+
+
+const findTrips = ()=>{
+  console.log('info',info);
+  router.push(`flights?from=${info.from}&to=${info.to}&depart=${info.depart}&return=${info.return}&seatNumber=${info.seatNumber}&seatClass=${info.seatClass}`)
+
+  
+}
+
   return (
     <div className={styles.main}>
         <div className={styles.body}>
-          <Autocomplete className={styles.first}  label='откуда' placeholder='Город' onChange={(e:string)=>onInfoChange('from', e)}>
-            {citiesDefault.from.map(el=>
-                 <div className={styles.popper__item} key={el}>
-                 <BiSolidPlaneAlt/>
-                 <div className={styles.popper__text}>{el}</div>
-              </div>
-            )}
-          </Autocomplete>
-          <Autocomplete label='куда' placeholder='Город' onChange={(e:string)=>onInfoChange('to', e)}>
-            {citiesDefault.from.map(el=>
-                 <div className={styles.popper__item} key={el}>
-                 <BiSolidPlaneAlt/>
-                 <div className={styles.popper__text}>{el}</div>
-              </div>
-            )}
-          </Autocomplete>
-          <DatePicker label='отлет' onChange={(e:Dayjs)=> onInfoChange('depart', e.format('DD/MM/YYYY'))}/>
-          <DatePicker className={styles.last} label='возврат' onChange={(e:Dayjs)=> onInfoChange('return', e.format('DD/MM/YYYY'))}/>
+          <Autocomplete items={cityList.map(el=>el.name)} className={styles.first}  label='откуда' placeholder='Город' onChange={(e:string)=>onCityChange(e, 'from')}/>
+          <Autocomplete items={cityList.map(el=>el.name)} label='куда' placeholder='Город' onChange={(e:string)=>onCityChange(e, 'to')}/>
+          <DatePicker value={dayjs(info.depart)} label='отлет' onChange={(e:Dayjs)=> onInfoChange('depart', e.valueOf())}/>
+          <DatePicker value={dayjs(info.return)} label='возврат' onChange={(e:Dayjs)=> onInfoChange('return', e.valueOf())}/>
+          <SeatPicker  onChange={(e)=>onSeatChange(e.seatNumber, e.seatClass)}  className={styles.last} label='класс и количество мест' placeholder='1 место, эконом' />
         </div>
-        <Button   variant="contained">Найти</Button>
+        <Button onClick={findTrips}   variant="contained">Найти</Button>
     </div>
   )
 }

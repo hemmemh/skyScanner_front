@@ -49,7 +49,7 @@ export const Footer = () => {
             </div>
             <div className={styles.action_column}>
               {accordionContent.map(el=>
-                            <Accordion sx={accordionStyle}>
+                            <Accordion sx={accordionStyle} key={el.title}>
                             <AccordionSummary
                               expandIcon={<IoIosArrowDown   color='white'/>}
                               aria-controls="panel1-content"
@@ -59,7 +59,7 @@ export const Footer = () => {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <div className={styles.accordion_list}>
-                                  {el.options.map(item=>   <Link className={styles.action} href={''}>{item}</Link>)}
+                                  {el.options.map(item=>   <Link className={styles.action} href={''} key={item}>{item}</Link>)}
                                 </div>
                             </AccordionDetails>
                                 </Accordion>

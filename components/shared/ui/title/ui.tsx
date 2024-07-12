@@ -8,11 +8,12 @@ interface Title {
     className?:string
     size?:Size
     marginBottom?:string
+    color?:string
 }
 
 type Size = 'text'| 'small' | 'medium' | 'large' | 'xl'
-export const Title:FC<Title> = ({children, size = 'small', marginBottom= '0', className= 'default'}) => {
+export const Title:FC<Title> = ({children, size = 'small', marginBottom= '0', className= 'default', color= 'white'}) => {
   return (
-    <div style={{marginBottom}} className={clsx(className, styles.title,   styles[size])}>{children}</div>
+    <div style={{marginBottom,color}} className={clsx(className, styles.title,   styles[size])}>{children}</div>
   )
 }

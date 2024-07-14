@@ -4,22 +4,20 @@ import styles from './styles.module.scss';
 import { IoAirplaneSharp } from 'react-icons/io5';
 import { ITrip } from '../../api/trip';
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration'
+dayjs.extend(duration);
 import { sliceCity } from '../../lib/flight';
 interface FlightData {
   data:ITrip
 }
 
 export const FlightData:FC<FlightData> = ({data}) => {
-  console.log('data', data);
   
+  const start = dayjs(+data.departure_time).format('HH:mm')
+  const end = dayjs(+data.arrival_time).format('HH:mm')
+  const hours = dayjs.duration(+data.arrival_time - +data.departure_time ).asHours().toFixed()
+  const minutes = dayjs.duration(+data.arrival_time - (+data.departure_time + +hours * 3600000)).asMinutes().toFixed() 
 
-  const start = dayjs(data.departure_time).format('HH:MM')
-  const end = dayjs(data.arrival_time).format('HH:MM')
-
-  const diffTime = dayjs(data.arrival_time).diff(dayjs(data.departure_time)) 
-
-  const hours = dayjs(diffTime).hour()
-  const minutes = dayjs(diffTime).minute()
 
 
   return (

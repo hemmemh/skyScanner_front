@@ -24,7 +24,7 @@ export const Header = () => {
     <div className={styles.header}>
                   <div className='container'>
                   <div className={styles.body}>
-            <div onClick={()=>router.push('home')} className={styles.logo}>
+            <div onClick={()=>router.push('/home')} className={styles.logo}>
             <Image
                   src={logo}
                   width={173}

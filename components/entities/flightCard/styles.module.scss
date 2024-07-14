@@ -25,6 +25,10 @@
     display: flex;
     gap: 3rem;
     align-items: center;
+
+    &__company{
+        flex:  0 1 130px;
+    }
 }
 
 

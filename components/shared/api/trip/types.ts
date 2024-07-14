@@ -18,5 +18,3 @@ export interface ITrip {
     //paths: Path[]
 }
 
-
-

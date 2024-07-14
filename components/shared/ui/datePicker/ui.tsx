@@ -6,19 +6,20 @@ import { Input } from '../input';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { DateCalendar } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
+import { IoIosClose } from 'react-icons/io';
 
 
 interface Autocomplete {
 
-  value?:Dayjs
+  value?:Dayjs | null
   className?:string;
   label?:string
-  onChange:(value:Dayjs)=>void
+  onChange:(value:Dayjs | null)=>void
 }
 
 export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, label, value = dayjs()}) => {
 
-  const [day, setDay] = useState(value)
+  const [day, setDay] = useState<Dayjs | null>(value)
   const [calendarOpen, setCalendarOpen] = useState(false)
   const calendarRef = useRef(null)
   const caseRef = useRef(null)
@@ -32,14 +33,14 @@ export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, la
     left:'0', zIndex:'2200'
   }
 
-  const dateClick = (day:Dayjs)=>{
+  const dateClick = (day:Dayjs | null)=>{
 
     setDay(day)
     onChange(day)
   }
 
   const closeCalendar = (e:any) =>{
-    console.log('ddd');
+    console.log('ddd', calendarRef.current, caseRef.current);
     if (!calendarRef.current)  return
     if (!caseRef.current)  return
     const target = e.target as HTMLElement
@@ -47,9 +48,11 @@ export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, la
     
     const calendar = calendarRef.current as HTMLElement
     const datePicker = caseRef.current as HTMLElement
-  
+   const close  = datePicker.querySelector(`.${styles.case__reset}`)
+    console.log('close', close);
+    if (!close)  return
     
-    if (datePicker.contains(target) ) {
+    if (datePicker.contains(target) &&  target !== close && !close.contains(target)) {
       setCalendarOpen(true)
       return
     }
@@ -68,6 +71,7 @@ export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, la
   }
 
   useEffect(() => {
+  console.log('day', day);
   
     document.addEventListener('click',closeCalendar)
  
@@ -87,11 +91,16 @@ export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, la
   return (
     <div ref={caseRef} className={clsx(styles.case, className, {[styles.active]:calendarOpen})} >
     <div className={styles.case__body}>
-    <div className={styles.case__upText}>{label}</div>
-          <div >
-                      <Input  value={day.format('DD/MM/YYYY')}/>
+      <div className={styles.case__info}>
+         <div className={styles.case__upText}>{label}</div>
+         <div > 
+                      <Input  value={day ? day.format('DD/MM/YYYY') : 'Дата'}/>
                       <DateCalendar sx={calendarStyle} ref={calendarRef} onChange={dateClick}/>
-          </div> 
+         </div> 
+      </div>
+      <div onClick={()=>dateClick(null)}  className={clsx(styles.case__reset, {[styles.case__reset_active]: day})}>
+      <IoIosClose size={30} />
+      </div>
     </div>
   
     </div>

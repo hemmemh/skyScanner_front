@@ -24,9 +24,27 @@
 
 
   &__body{
-     display: flex;
-     width: 100%;
-     flex-direction: column;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  }
+
+  &__reset{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    &_active{
+opacity: 1;
+pointer-events: visible;
+    }
+  }
+
+  &__info{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
   }
 
   &__upText{

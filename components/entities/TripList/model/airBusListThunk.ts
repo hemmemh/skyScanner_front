@@ -1,12 +1,22 @@
 
 import { getAllTrips } from '@/components/shared/api/trip'
+import { getAllTripsWithReturns } from '@/components/shared/api/trip/seatClass'
+import { Info } from '@/components/shared/types/tripsTypes'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
 
-export const fetchTripList = createAsyncThunk('trip/getAll', async (params:any) => {
+interface FetchTripList {
+  query:Info,
+  params:any
+}
+export const fetchTripList = createAsyncThunk('trip/getAll', async (data:FetchTripList) => {
     try {
-        const response = await getAllTrips(params)
-        return response
+        if('return' in data.params){
+           return await getAllTripsWithReturns(data.query, data.params)
+        }else{
+           return await getAllTrips(data.query, data.params)
+        }
+
     } catch (err) {
         return  null
     }

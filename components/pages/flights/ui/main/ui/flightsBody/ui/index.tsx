@@ -7,11 +7,13 @@ import styles from './styles.module.scss';
 import { useAppDispatch, useAppSelector } from '@/components/shared/lib/store';
 import { fetchTripList, selectTripList } from '@/components/entities/TripList';
 import { useParams, useSearchParams } from 'next/navigation'
+import { isTripsPairs } from '@/components/shared/quards/guards'
 export const FlightsBody = () => {
 
   const useDispatch = useAppDispatch()
 
   const searchParams = useSearchParams()
+  const params =  useParams()
 
 
 
@@ -21,21 +23,33 @@ export const FlightsBody = () => {
 
 
   useEffect(() => {
-     const params:any = {} 
+    console.log(' paramss',  params);
+    
+     const query:any = {} 
      for (const [key, value] of searchParams.entries()) {
-      params[key] = value
+      query[key] = value
       console.log(`${key}, ${value}`, searchParams.entries());
     }
     
-     console.log('params',  params);
-     
-   
-        
-    useDispatch(fetchTripList(params))
+    
+    useDispatch(fetchTripList({query, params}))
     return () => {
     
     }
   }, [])
+
+
+  useEffect(() => {
+     console.log('searchParams', searchParams);
+     const query:any = {} 
+     for (const [key, value] of searchParams.entries()) {
+      query[key] = value
+      console.log(`${key}, ${value}`, searchParams.entries());
+    }
+    useDispatch(fetchTripList({query, params}))
+     
+  }, [searchParams])
+  
 
 
   return (
@@ -44,9 +58,15 @@ export const FlightsBody = () => {
     
           <div className={styles.body}>
     <FlightsSort/>
+    <div className={styles.cards}>
     {tripList && tripList.map(el=>
-    <FlightCard key={el.uid}  data={el}/>
+    {if (isTripsPairs(el)) return <FlightCard key={el[0].uid}  data={el}/>
+    if (!isTripsPairs(el)) return <FlightCard key={el.uid}  data={el}/>
+   }
+
     )}
+    </div>
+
 
     </div>
 

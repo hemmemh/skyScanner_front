@@ -8,15 +8,15 @@ import duration from 'dayjs/plugin/duration'
 dayjs.extend(duration);
 import { sliceCity } from '../../lib/flight';
 interface FlightData {
-  data:ITrip
+  data:ITrip[]
 }
 
 export const FlightData:FC<FlightData> = ({data}) => {
-  
-  const start = dayjs(+data.departure_time).format('HH:mm')
-  const end = dayjs(+data.arrival_time).format('HH:mm')
-  const hours = dayjs.duration(+data.arrival_time - +data.departure_time ).asHours().toFixed()
-  const minutes = dayjs.duration(+data.arrival_time - (+data.departure_time + +hours * 3600000)).asMinutes().toFixed() 
+  const lastIndex = data.length - 1 
+  const start = dayjs(+data[0].departure_time).format('HH:mm')
+  const end = dayjs(+data[lastIndex].arrival_time).format('HH:mm')
+  const hours = dayjs.duration(+data[lastIndex].arrival_time - +data[0].departure_time ).asHours().toFixed()
+  const minutes = dayjs.duration(+data[lastIndex].arrival_time - (+data[0].departure_time + +hours * 3600000)).asMinutes().toFixed() 
 
 
 
@@ -25,10 +25,11 @@ export const FlightData:FC<FlightData> = ({data}) => {
    
     <div className={styles.dataFlight__location}>
       <div className={styles.dataFlight__time}>{start}</div>
-      <div className={styles.dataFlight__place}>{sliceCity(data.departure_city.name)}</div>
+      <div className={styles.dataFlight__place}>{sliceCity(data[0].departure_city.name)}</div>
     </div>
     <div className={styles.dataFlight__direction}>
        <div className={styles.dataFlight__hours}>{hours}h{minutes}</div>
+       <div className={styles.dataFlight__hours}>{data.length}</div>
        <div className={styles.dataFlight__icon}>
       <span></span>
       <IoAirplaneSharp color='#626971' />
@@ -37,7 +38,7 @@ export const FlightData:FC<FlightData> = ({data}) => {
     </div>
     <div className={styles.dataFlight__location}>
       <div className={styles.dataFlight__time}>{end}</div>
-      <div className={styles.dataFlight__place}>{sliceCity(data.arrival_city.name)}</div>
+      <div className={styles.dataFlight__place}>{sliceCity(data[lastIndex].arrival_city.name)}</div>
     </div>
 </div>
   )

@@ -18,6 +18,9 @@ export const fetchTripList = createAsyncThunk('trip/getAll', async (data:FetchTr
         }
 
     } catch (err) {
+        console.log(err);
         return  null
+
+        
     }
 })

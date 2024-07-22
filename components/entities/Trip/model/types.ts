@@ -4,7 +4,7 @@ import { RejectedDataType } from '@/components/shared/types/errorTypes'
 
 export interface ITripListState {
     /** List of books. */
-    readonly trips: [ITrip[], ITrip[]][] | ITrip[][] | null
+    readonly trips: [ITrip[], ITrip[]] | ITrip[] | null
     /** Data loading indicator. */
     readonly loading: boolean
     /** Error message. */

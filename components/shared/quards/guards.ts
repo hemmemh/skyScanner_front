@@ -1,5 +1,5 @@
 import { ITrip } from "../api/trip";
 
-export function isTripsPairs(trips: ITrip | [ITrip, ITrip]): trips is [ITrip, ITrip] {
-    return Array.isArray(trips);
+export function isTripsPairs<T>(trips: T[] | [T[], T[]]): trips is [T[], T[]] {
+    return  trips.length !== 0 && Array.isArray(trips[0]);
   }

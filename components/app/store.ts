@@ -3,6 +3,7 @@ import { AirBusReducer } from '../entities/airBus'
 import { TripReducer } from '../entities/TripList';
 import { CityReducer } from '../entities/cityList';
 import { SeatClassReducer } from '../entities/seatClassList';
+import { TripsReducer } from '../entities/Trip';
 
 
 
@@ -18,6 +19,7 @@ const logger: Middleware = (store) => (next) => (action) => {
 const rootRecucer = combineReducers({
   airBusList: AirBusReducer,
   tripList:TripReducer,
+  trips:TripsReducer,
   cityList:CityReducer,
   seatClassList:SeatClassReducer,
 })

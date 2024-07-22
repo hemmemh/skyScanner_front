@@ -59,9 +59,9 @@ export const FlightsBody = () => {
           <div className={styles.body}>
     <FlightsSort/>
     <div className={styles.cards}>
-    {tripList && tripList.map(el=>
-    {if (isTripsPairs(el)) return <FlightCard key={el[0].uid}  data={el}/>
-    if (!isTripsPairs(el)) return <FlightCard key={el.uid}  data={el}/>
+    {tripList && tripList.map((el, i)=>
+    {if (isTripsPairs(el)) return <FlightCard key={i}  data={el}/>
+    if (!isTripsPairs(el)) return <FlightCard key={i}  data={el}/>
    }
 
     )}

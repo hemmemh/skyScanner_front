@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { FC } from 'react'
 import styles from './styles.module.scss';
 import clsx from 'clsx';
 import { IoAirplaneSharp } from "react-icons/io5";
@@ -10,7 +10,53 @@ import { MdFavoriteBorder } from "react-icons/md";
 import { FlightData } from '@/components/shared/ui/flightData';
 import { FlightVertData } from '@/components/shared/ui/flightVertData';
 import { IoIosArrowDown } from 'react-icons/io';
-export const FlightBigCard = () => {
+import { ITrip } from '@/components/shared/api/trip';
+import { isTripsPairs } from '@/components/shared/quards/guards';
+
+
+
+interface FlightBigCard {
+  data:[ITrip[], ITrip[]] | ITrip[]
+}
+
+const Infos:FC<FlightBigCard> = ({data})=>{
+  console.log('data', data);
+  
+  if (isTripsPairs(data)) {
+    return (
+      <>
+      <div className={styles.info}>
+ 
+ <div className={styles.info__company}>{data[0][0].company.name}</div>
+ <FlightData data={data[0]}/>
+
+
+  </div> 
+  <div className={styles.info}>
+ 
+ <div className={styles.info__company}>{data[1][0].company.name}</div>
+ <FlightData data={data[1]}/>
+
+
+  </div>
+</>
+    )
+  }else{
+    return (
+      <div className={styles.info}>
+         
+      <div className={styles.info__company}>{data[0].company.name}</div>
+      <FlightData data={data}/>
+       </div> 
+    )
+  }
+
+}
+
+
+
+
+export const FlightBigCard:FC<FlightBigCard> = ({data}) => {
   return (
      <div className={styles.main}>
       <div className={styles.body}>
@@ -21,8 +67,7 @@ export const FlightBigCard = () => {
           id="panel1-header"
         >
           <div className={styles.head}>
-            <div className={styles.company}>Company</div>
-            <FlightData/>
+          <Infos data={data}/>
           </div>
 
         </AccordionSummary>

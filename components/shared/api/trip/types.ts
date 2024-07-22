@@ -18,3 +18,11 @@ export interface ITrip {
     //paths: Path[]
 }
 
+
+export interface IGetTripsWithReturns{
+    trips:[ITrip[], ITrip[]]
+}
+
+export interface IGetTrips{
+    trips:ITrip[]
+}

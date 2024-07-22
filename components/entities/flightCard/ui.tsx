@@ -9,9 +9,11 @@ import { MdFavoriteBorder } from "react-icons/md";
 import { FlightData } from '@/components/shared/ui/flightData';
 import { ITrip } from '@/components/shared/api/trip';
 import { isTripsPairs } from '@/components/shared/quards/guards';
+import { useRouter } from 'next/navigation';
+
 
 interface FlightCard {
-  data:[ITrip, ITrip] | ITrip
+  data:[ITrip[], ITrip[]] | ITrip[]
 }
 
 const Infos:FC<FlightCard> = ({data})=>{
@@ -20,14 +22,14 @@ const Infos:FC<FlightCard> = ({data})=>{
       <>
       <div className={styles.info}>
  
- <div className={styles.info__company}>{data[0].company.name}</div>
+ <div className={styles.info__company}>{data[0][0].company.name}</div>
  <FlightData data={data[0]}/>
 
 
   </div> 
   <div className={styles.info}>
  
- <div className={styles.info__company}>{data[1].company.name}</div>
+ <div className={styles.info__company}>{data[1][0].company.name}</div>
  <FlightData data={data[1]}/>
 
 
@@ -38,7 +40,7 @@ const Infos:FC<FlightCard> = ({data})=>{
     return (
       <div className={styles.info}>
          
-      <div className={styles.info__company}>{data.company.name}</div>
+      <div className={styles.info__company}>{data[0].company.name}</div>
       <FlightData data={data}/>
        </div> 
     )
@@ -48,15 +50,29 @@ const Infos:FC<FlightCard> = ({data})=>{
 
 const Price:FC<FlightCard>= ({data})=>{
   if (isTripsPairs(data)) {
-    return   <div className={styles.actions__price}>{data[0].price + data[1].price}₽</div>
+    const firstPrice = data[0].reduce((prev:number, current:ITrip)=>prev + current.price,0)
+    const secondPrice = data[1].reduce((prev:number, current:ITrip)=>prev + current.price,0)
+    return   <div className={styles.actions__price}>{firstPrice + secondPrice}₽</div>
   }else{
-    return   <div className={styles.actions__price}>{data.price + data.price}₽</div>
+    const price = data.reduce((prev:number, current:ITrip)=>prev + current.price,0)
+    return   <div className={styles.actions__price}>{price}₽</div>
   }
 }
 
-export const FlightCard:FC<FlightCard> = ({data}) => {
 
+
+export const FlightCard:FC<FlightCard> = ({data}) => {
+  const router = useRouter()
+  const selectTrip = ()=>{
+    if (isTripsPairs(data)) {
+      console.log('data[0].join(',')', data[0].join(','));
+      
+      router.push(`../../flight/${data[0].map(el=>el.uid).join(',')}/${data[1].map(el=>el.uid).join(',')}`)
+    }else{
+      router.push(`flight/${data.map(el=>el.uid).join(',')}`)
+    }
  
+  }
   return (
      <div className={styles.main}>
       <div className={styles.body}>
@@ -67,7 +83,7 @@ export const FlightCard:FC<FlightCard> = ({data}) => {
         <div className={styles.actions}>
           <div className={styles.actions__body}>
              <Price data={data}/>
-             <Button variant="contained" endIcon={<FaArrowRightLong/>}>Select</Button>
+             <Button onClick={selectTrip} variant="contained" endIcon={<FaArrowRightLong/>}>Select</Button>
           </div>
           <div className={styles.actions__favorite}>
           <IconButton aria-label="delete">

@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { ITripListState } from './types'
-import { fetchTripList } from './tripListThunk'
+import { fetchTrips } from './tripThunk'
+
 
 
 
@@ -10,28 +11,28 @@ const initialState: ITripListState = {
     error: null,
 }
 
-const TripListSlice = createSlice({
-    name: 'tripList',
+const TripsSlice = createSlice({
+    name: 'trip',
     initialState,
     reducers: {
     },
     extraReducers: (builder) =>
         builder
-            .addCase(fetchTripList.pending, (state) => {
+            .addCase(fetchTrips.pending, (state) => {
                 state.loading = true
                 state.error = null
             })
-            .addCase(fetchTripList.fulfilled, (state, action) => {
+            .addCase(fetchTrips.fulfilled, (state, action) => {
               console.log('cc', action);
               
                 state.trips = action.payload
                 state.loading = false
                 state.error = null
             })
-            .addCase(fetchTripList.rejected, (state, action) => {
+            .addCase(fetchTrips.rejected, (state, action) => {
                 state.loading = false
                 state.error = null
             }),
 })
 
-export default TripListSlice.reducer
+export default TripsSlice.reducer

@@ -1,16 +1,25 @@
 
-import React from 'react'
+import React, { FC } from 'react'
 import styles from './styles.module.scss';
 import { IoAirplaneSharp } from 'react-icons/io5';
+import { ITrip } from '../../api/trip';
+import { msToHoursAndMinutes, sliceCity } from '../../lib/flight';
 
-export const FlightVertData = () => {
+interface FlightVertData {
+  trip:ITrip
+}
+
+export const FlightVertData:FC<FlightVertData> = ({trip}) => {
+console.log('el', trip);
+
+  const {start, end,hours,minutes} = msToHoursAndMinutes(+trip.departure_time,+trip.arrival_time)
   return (
     <div className={styles.body}>
-      <div className={styles.hours}>0h 50</div>
+      <div className={styles.hours}>{hours}h{minutes}</div>
       <div className={styles.info}>
         <span className={styles.span}></span>
-        <div className={styles.data}>15:50 STR Stuttgart</div>
-        <div className={styles.data}>15:50 FRA Frankfurt am Main</div>
+        <div className={styles.data}>{start} {sliceCity(trip.departure_city.name)} {trip.departure_city.name}</div>
+        <div className={styles.data}>{end} {sliceCity(trip.arrival_city.name)} {trip.arrival_city.name}</div>
       </div>
 
     </div>

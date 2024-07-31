@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { FC, useEffect } from 'react'
 import styles from './styles.module.scss'
 import { MdFavoriteBorder } from "react-icons/md";
 import { Title } from '@/components/shared/ui/title';
@@ -10,6 +10,8 @@ import { Add } from '@/components/shared/ui/add';
 import { useAppDispatch, useAppSelector } from '@/components/shared/lib/store';
 import { useParams, useSearchParams } from 'next/navigation';
 import { fetchTrips, selectTrips } from '@/components/entities/Trip';
+import { isTripsPairs } from '@/components/shared/quards/guards';
+import { ITrip } from '@/components/shared/api/trip';
 export const Details = () => {
 
   const useDispatch = useAppDispatch()
@@ -34,6 +36,31 @@ export const Details = () => {
   }, [])
   
 
+  const FlightCards = ({trips}:{trips: ITrip[] | [ITrip[], ITrip[]]})=>{
+ if(isTripsPairs(trips)){
+  return <>
+                  <div className={styles.info}>
+                    <div className={styles.info__title}>Outbound Tue, 9 Jul 2024</div>
+                    {trips &&  <FlightBigCard data={trips[0]}/>}
+                   
+                </div>
+                <div className={styles.info}>
+                    <div className={styles.info__title}>Return Tue, 16 Jul 2024</div>
+                    {trips && <FlightBigCard data={trips[1]}/>}
+                    
+                </div>
+  </>
+ }
+
+ return <>
+             <div className={styles.info}>
+                    <div className={styles.info__title}>Return Tue, 16 Jul 2024</div>
+                    {trips && <FlightBigCard data={trips}/>}
+                    
+                </div>
+ </>
+  }
+
 
   
   return (
@@ -44,16 +71,7 @@ export const Details = () => {
               <div className={styles.infos}>
                 <div className={styles.flightInfos}>
                 <div className={styles.data}>
-                <div className={styles.info}>
-                    <div className={styles.info__title}>Outbound Tue, 9 Jul 2024</div>
-                    {trips &&  <FlightBigCard data={trips}/>}
-                   
-                </div>
-                <div className={styles.info}>
-                    <div className={styles.info__title}>Return Tue, 16 Jul 2024</div>
-                    {trips && <FlightBigCard data={trips}/>}
-                    
-                </div>
+             {trips &&  <FlightCards trips={trips}/>}
                 </div>
 
                 <div className={styles.pay}>

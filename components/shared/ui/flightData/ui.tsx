@@ -6,17 +6,18 @@ import { ITrip } from '../../api/trip';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration'
 dayjs.extend(duration);
-import { sliceCity } from '../../lib/flight';
+import { msToHoursAndMinutes, sliceCity } from '../../lib/flight';
 interface FlightData {
   data:ITrip[]
 }
 
 export const FlightData:FC<FlightData> = ({data}) => {
-  const lastIndex = data.length - 1 
-  const start = dayjs(+data[0].departure_time).format('HH:mm')
-  const end = dayjs(+data[lastIndex].arrival_time).format('HH:mm')
-  const hours = dayjs.duration(+data[lastIndex].arrival_time - +data[0].departure_time ).asHours().toFixed()
-  const minutes = dayjs.duration(+data[lastIndex].arrival_time - (+data[0].departure_time + +hours * 3600000)).asMinutes().toFixed() 
+
+
+  const {start, end,hours,minutes} = msToHoursAndMinutes(+data[0].departure_time,+data[data.length - 1 ].arrival_time)
+
+ console.log('data0', data[0]);
+ 
 
 
 
@@ -38,7 +39,7 @@ export const FlightData:FC<FlightData> = ({data}) => {
     </div>
     <div className={styles.dataFlight__location}>
       <div className={styles.dataFlight__time}>{end}</div>
-      <div className={styles.dataFlight__place}>{sliceCity(data[lastIndex].arrival_city.name)}</div>
+      <div className={styles.dataFlight__place}>{sliceCity(data[data.length - 1].arrival_city.name)}</div>
     </div>
 </div>
   )

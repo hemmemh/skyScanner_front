@@ -12,51 +12,26 @@ import { FlightVertData } from '@/components/shared/ui/flightVertData';
 import { IoIosArrowDown } from 'react-icons/io';
 import { ITrip } from '@/components/shared/api/trip';
 import { isTripsPairs } from '@/components/shared/quards/guards';
+import dayjs from "dayjs"
+import { msToHoursAndMinutes, weekDayAndDatefromMs } from '@/components/shared/lib/flight';
 
 
 
 interface FlightBigCard {
-  data:[ITrip[], ITrip[]] | ITrip[]
+  data:ITrip[]
 }
 
-const Infos:FC<FlightBigCard> = ({data})=>{
-  console.log('data', data);
-  
-  if (isTripsPairs(data)) {
-    return (
-      <>
-      <div className={styles.info}>
- 
- <div className={styles.info__company}>{data[0][0].company.name}</div>
- <FlightData data={data[0]}/>
 
-
-  </div> 
-  <div className={styles.info}>
- 
- <div className={styles.info__company}>{data[1][0].company.name}</div>
- <FlightData data={data[1]}/>
-
-
-  </div>
-</>
-    )
-  }else{
-    return (
-      <div className={styles.info}>
-         
-      <div className={styles.info__company}>{data[0].company.name}</div>
-      <FlightData data={data}/>
-       </div> 
-    )
-  }
-
-}
 
 
 
 
 export const FlightBigCard:FC<FlightBigCard> = ({data}) => {
+
+
+
+
+  
   return (
      <div className={styles.main}>
       <div className={styles.body}>
@@ -67,18 +42,28 @@ export const FlightBigCard:FC<FlightBigCard> = ({data}) => {
           id="panel1-header"
         >
           <div className={styles.head}>
-          <Infos data={data}/>
+          <div className={styles.info}>
+         
+      <div className={styles.info__company}>{data[0].company.name}</div>
+      <FlightData data={data}/>
+       </div> 
           </div>
 
         </AccordionSummary>
         <AccordionDetails>
-          <div className={styles.bort}>Lufthansa LH135</div>
-          <FlightVertData/>
+          <div className={styles.trips}>
+            {data.map(el=>
+              <>
+                  <div key={el.uid} className={styles.bort}>{el.airBus.name}</div>
+          <FlightVertData trip={el}/>
           <div className={styles.infos}>
-          <div className={styles.info}>Arrives: Tue, 9 Jul 2024</div>
+          <div className={styles.info}>Arrives: {weekDayAndDatefromMs(el.departure_time)}</div>
           <span className={styles.span}></span>
-          <div className={styles.info}>Journey duration: 0h 50</div>
+          <div className={styles.info}>Journey duration: {msToHoursAndMinutes(el.departure_time, el.arrival_time).hours}h {msToHoursAndMinutes(el.departure_time, el.arrival_time).minutes}</div>
+          </div></>
+            )}
           </div>
+
         </AccordionDetails>
       </Accordion>
       </div>

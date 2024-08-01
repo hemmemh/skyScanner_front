@@ -12,5 +12,13 @@ export interface Info{
 
 
 
+export type russianStopName = 'прямой' | '1 пересадка' | '2 пересадки'
+export type StopValue = 'direct' | 'oneTransfer' | 'twoTransfer'
+
+
+export type Stop = {
+  name: russianStopName;
+  value: StopValue;
+}
 export type Sort =  'optimal' | 'cheapest' | 'fastest'
 

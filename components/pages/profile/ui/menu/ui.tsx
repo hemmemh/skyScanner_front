@@ -1,10 +1,11 @@
+'use client'
 import { FlightCard } from '@/components/entities/flightCard'
 import { FlightsFilter } from '@/components/features/flightsFilter/ui'
 import { FlightsSort } from '@/components/features/flightsSort'
 import firstLogo from '@/public/images/booking-logo.svg'
 import secondLogo from '@/public/images/hotels-logo.svg'
 import thirdLogo from '@/public/images/trip-logo.svg'
-import React from 'react'
+import React, { useContext } from 'react'
 import styles from './styles.module.scss';
 import Image from 'next/image';
 import { Title } from '@/components/shared/ui/title'
@@ -13,16 +14,29 @@ import { Add } from '@/components/shared/ui/add'
 import { HiMiniUser } from 'react-icons/hi2'
 import { IoIosArrowForward } from 'react-icons/io'
 import { MdOutlineAirplaneTicket } from 'react-icons/md'
+import { useAppDispatch, useAppSelector } from '@/components/shared/lib/store'
+import { logout, logoutUser, selectUser } from '@/components/entities/user'
+import { OptionMenuContext } from '@/components/shared/ui/optionMenuProvider/ui'
+
 export const Menu = () => {
+  const user = useAppSelector(selectUser)
+  const useDispatch = useAppDispatch()
+  const { setOption } = useContext(OptionMenuContext);
+
+  const onLogoutClick = () =>{
+    console.log('ckuick');
+    
+    useDispatch(logout())
+  }
   return (
     <div className={styles.main}>
       <div className={styles.body}>
         <div className={styles.user}>
-          <Title className={styles.titleColor} size='large'>Hi there!</Title>
-          <div className={styles.mail}>makhmutov940@gmail.com</div>
+          <Title className={styles.titleColor} color='#000' size='large'>Hi there!</Title>
+          <div className={styles.mail}>{user?.email}</div>
         </div>
         <div className={styles.nav}>
-          <div className={styles.navItem}>
+          <div onClick={()=>setOption(1)} className={styles.navItem}>
           <div className={styles.navItem__icon}>
           <HiMiniUser />
           </div>
@@ -31,7 +45,7 @@ export const Menu = () => {
            <IoIosArrowForward />
            </div>
           </div>
-          <div className={styles.navItem}>
+          <div  onClick={()=>setOption(2)}  className={styles.navItem}>
           <div className={styles.navItem__icon}>
           <MdOutlineAirplaneTicket />
           </div>
@@ -42,7 +56,7 @@ export const Menu = () => {
           </div>
         </div>
         <div className={styles.logout}>
-          <Button>Log out</Button>
+          <Button onClick={onLogoutClick}>Log out</Button>
         </div>
       </div>
     </div>

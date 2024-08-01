@@ -1,14 +1,15 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import styles from './styles.module.scss';
 import { User } from './user';
 import { Booking } from './booking';
+import { OptionMenuContext } from '@/components/shared/ui/optionMenuProvider/ui';
 
 
 
 export const Options = () => {
+  const { option } = useContext(OptionMenuContext);
 
-  const [option, setoption] = useState(2)
   return (
    <div className={styles.main}>
     {option === 1 &&  <User/>}

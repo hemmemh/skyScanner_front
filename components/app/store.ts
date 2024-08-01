@@ -4,6 +4,7 @@ import { TripReducer } from '../entities/TripList';
 import { CityReducer } from '../entities/cityList';
 import { SeatClassReducer } from '../entities/seatClassList';
 import { TripsReducer } from '../entities/Trip';
+import userSlice from '../entities/user/model/userSlice';
 
 
 
@@ -22,6 +23,7 @@ const rootRecucer = combineReducers({
   trips:TripsReducer,
   cityList:CityReducer,
   seatClassList:SeatClassReducer,
+  user:userSlice
 })
 
 

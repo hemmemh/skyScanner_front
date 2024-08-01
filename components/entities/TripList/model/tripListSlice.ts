@@ -6,6 +6,10 @@ import { fetchTripList } from './tripListThunk'
 
 const initialState: ITripListState = {
     trips: null,
+    minTime:0,
+    maxTime:0,
+    minDepartureTime:0,
+    maxDepartureTime:0,
     loading: false,
     error: null,
 }
@@ -24,7 +28,11 @@ const TripListSlice = createSlice({
             .addCase(fetchTripList.fulfilled, (state, action) => {
               console.log('cc', action);
               
-                state.trips = action.payload
+                state.trips = action.payload ? action.payload.trips : null
+                state.minTime = action.payload ? action.payload.minTime : 0
+                state.maxTime = action.payload ? action.payload.maxTime : 0
+                state.minDepartureTime = action.payload ? action.payload.minDepartureTime : 0
+                state.maxDepartureTime = action.payload ? action.payload.maxDepartureTime : 0
                 state.loading = false
                 state.error = null
             })

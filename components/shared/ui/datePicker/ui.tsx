@@ -37,6 +37,9 @@ export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, la
 
     setDay(day)
     onChange(day)
+    console.log('ff');
+    
+    setCalendarOpen(true)
   }
 
   const closeCalendar = (e:any) =>{
@@ -48,9 +51,14 @@ export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, la
     
     const calendar = calendarRef.current as HTMLElement
     const datePicker = caseRef.current as HTMLElement
-   const close  = datePicker.querySelector(`.${styles.case__reset}`)
-    console.log('close', close);
+    const close  = datePicker.querySelector(`.${styles.case__reset}`)
+    const dateButton = datePicker.querySelector(`.MuiButtonBase-root`) 
+    console.log('close',target);
     if (!close)  return
+    if(target.classList.contains('MuiButtonBase-root')){
+      setCalendarOpen(false)
+      return
+    }
     
     if (datePicker.contains(target) &&  target !== close && !close.contains(target)) {
       setCalendarOpen(true)

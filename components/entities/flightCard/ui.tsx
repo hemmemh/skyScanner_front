@@ -9,7 +9,7 @@ import { MdFavoriteBorder } from "react-icons/md";
 import { FlightData } from '@/components/shared/ui/flightData';
 import { ITrip } from '@/components/shared/api/trip';
 import { isTripsPairs } from '@/components/shared/quards/guards';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 
 interface FlightCard {
@@ -63,13 +63,17 @@ const Price:FC<FlightCard>= ({data})=>{
 
 export const FlightCard:FC<FlightCard> = ({data}) => {
   const router = useRouter()
+  const searchParams = useSearchParams()
+
   const selectTrip = ()=>{
+    const seatNumber = searchParams.get('seatNumber')
+    const seatClass = searchParams.get('seatClass')
     if (isTripsPairs(data)) {
-      console.log('data[0].join(',')', data[0].join(','));
+
       
-      router.push(`../../flight/${data[0].map(el=>el.uid).join(',')}/${data[1].map(el=>el.uid).join(',')}`)
+      router.push(`/flight/${data[0].map(el=>el.uid).join(',')}/${data[1].map(el=>el.uid).join(',')}?seatNumber=${seatNumber}&seatClass=${seatClass}`)
     }else{
-      router.push(`flight/${data.map(el=>el.uid).join(',')}`)
+      router.push(`/flight/${data.map(el=>el.uid).join(',')}?seatNumber=${seatNumber}&seatClass=${seatClass}`)
     }
  
   }

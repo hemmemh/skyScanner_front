@@ -3,10 +3,12 @@ import {ITrip } from '@/components/shared/api/trip/types'
 import { RejectedDataType } from '@/components/shared/types/errorTypes'
 
 export interface ITripListState {
-    /** List of books. */
+
     readonly trips: [ITrip[], ITrip[]][] | ITrip[][] | null
-    /** Data loading indicator. */
+    readonly minTime:number
+    readonly maxTime:number
+    readonly minDepartureTime:number
+    readonly maxDepartureTime:number
     readonly loading: boolean
-    /** Error message. */
     readonly error: RejectedDataType | null
 }

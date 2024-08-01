@@ -30,6 +30,7 @@ export const Autocomplete:FC<Autocomplete> = ({className = 'default', label, onC
 
     setInput(event)
     onChange(event)
+    setPopperOpen(false)
   }
 
   const filterPopper = (value:string)=>{
@@ -105,7 +106,7 @@ export const Autocomplete:FC<Autocomplete> = ({className = 'default', label, onC
                       <div className={clsx(styles.popper__body)}>
                       {filrerValues.length === 0 && <div> нет значений</div>}
                        {filrerValues.map((el, id)=>
-                         <div className={clsx(styles.popper__item, {[styles.activeItem]:el === input})} onClick={(e)=>valueClick(el)} key={id}>
+                         <div  className={clsx(styles.popper__item, {[styles.activeItem]:el === input})} onClick={(e)=>valueClick(el)} key={id}>
                                      
                                            <BiSolidPlaneAlt/>
                                            <div className={styles.popper__text}>{el}</div>

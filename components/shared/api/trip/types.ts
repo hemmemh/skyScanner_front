@@ -19,6 +19,18 @@ export interface ITrip {
 }
 
 
+export interface getAllData {
+    trips:ITrip[][] | [ITrip[], ITrip[]][]
+    minTime:number
+    maxTime:number
+    minDepartureTime:number
+    maxDepartureTime:number
+}
+
+
+
+
+
 export interface IGetTripsWithReturns{
     trips:[ITrip[], ITrip[]]
 }

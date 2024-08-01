@@ -13,6 +13,26 @@ export const selectTripList = createSelector(
     (state: ITripListState) => state.trips
 )
 
+export const selectMinTime = createSelector(
+    selectBase,
+    (state: ITripListState) => state.minTime
+)
+
+export const selectMinDepartureTime = createSelector(
+    selectBase,
+    (state: ITripListState) => state.minDepartureTime
+)
+
+export const selectMaxTime = createSelector(
+    selectBase,
+    (state: ITripListState) => state.maxTime
+)
+
+export const selectMaxDepartureDeTime = createSelector(
+    selectBase,
+    (state: ITripListState) => state.maxDepartureTime
+)
+
 export const selectTripsListLoading = createSelector(
     selectBase,
     (state: ITripListState) => state.loading

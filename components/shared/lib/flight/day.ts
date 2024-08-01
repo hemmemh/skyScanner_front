@@ -13,7 +13,7 @@ export const msToHoursAndMinutes=(startDate:number, endDate:number)=>{
 }
 
 export const weekDayAndDatefromMs = (date:number)=>{
-    const weekDay = dayjs(date).day()
+    const weekDay = dayjs(date).format('ddd')
     const data = dayjs(date).date()
     const month = dayjs(date).format('MMM')
     const year = dayjs(date).year()

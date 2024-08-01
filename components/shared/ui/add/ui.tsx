@@ -16,8 +16,8 @@ export const Add = () => {
         <Image src={secondLogo} alt='logo'/>
         <Image src={thirdLogo} alt='logo'/>
     </div>
-    <Title className={styles.titleColor} size='medium'>Found flights? Now find a hotel</Title>
-    <Title className={styles.titleColor} size='text'>Get results from all the top hotel sites right here on Skyscanner.</Title>
+    <Title color='#000' className={styles.titleColor} size='medium'>Found flights? Now find a hotel</Title>
+    <Title color='#000' className={styles.titleColor} size='text'>Get results from all the top hotel sites right here on Skyscanner.</Title>
     <Button sx={{width:'100%'}} variant='contained'>Explore Hotel</Button>
   </div>
   )

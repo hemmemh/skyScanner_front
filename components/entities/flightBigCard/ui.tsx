@@ -1,5 +1,5 @@
 'use client'
-import React, { FC } from 'react'
+import React, { FC, memo } from 'react'
 import styles from './styles.module.scss';
 import clsx from 'clsx';
 import { IoAirplaneSharp } from "react-icons/io5";
@@ -26,7 +26,7 @@ interface FlightBigCard {
 
 
 
-export const FlightBigCard:FC<FlightBigCard> = ({data}) => {
+export const FlightBigCard:FC<FlightBigCard> = memo( ({data}) => {
 
 
 
@@ -57,9 +57,9 @@ export const FlightBigCard:FC<FlightBigCard> = ({data}) => {
                   <div key={el.uid} className={styles.bort}>{el.airBus.name}</div>
           <FlightVertData trip={el}/>
           <div className={styles.infos}>
-          <div className={styles.info}>Arrives: {weekDayAndDatefromMs(el.departure_time)}</div>
+          <div className={styles.info}>Arrives: {weekDayAndDatefromMs(+el.departure_time)}</div>
           <span className={styles.span}></span>
-          <div className={styles.info}>Journey duration: {msToHoursAndMinutes(el.departure_time, el.arrival_time).hours}h {msToHoursAndMinutes(el.departure_time, el.arrival_time).minutes}</div>
+          <div className={styles.info}>Journey duration: {msToHoursAndMinutes(+el.departure_time, +el.arrival_time).hours}h {msToHoursAndMinutes(+el.departure_time, +el.arrival_time).minutes}</div>
           </div></>
             )}
           </div>
@@ -69,4 +69,4 @@ export const FlightBigCard:FC<FlightBigCard> = ({data}) => {
       </div>
      </div>
   )
-}
+})

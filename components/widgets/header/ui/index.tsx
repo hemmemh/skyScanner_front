@@ -9,16 +9,29 @@ import Image from 'next/image';
 import { IconButton } from '@mui/material';
 import { LogIn } from '@/components/features/logIn';
 import { useRouter } from 'next/navigation';
+import { useAppSelector } from '@/components/shared/lib/store';
+import { selectUser } from '@/components/entities/user';
 export const Header = () => {
 
    const router =  useRouter()
    const [openLogIn, setOpenLogIn] = useState(false)
-
+   const user = useAppSelector(selectUser)
    useEffect(() => {
       console.log('aa', openLogIn);
       
    }, [openLogIn])
+
+   const loginButton = ()=>{
+    console.log('user', user);
+    
+    if (user) {
+      router.push('/profile')
+    }else{
+      setOpenLogIn(true)
+    }
+   }
    
+ 
   
   return (
     <div className={styles.header}>
@@ -40,7 +53,7 @@ export const Header = () => {
             <IconButton color='inherit'   aria-label="language">
             <MdFavorite color='white' fontSize={25}/>
             </IconButton>
-            <IconButton onClick={()=>setOpenLogIn(true)}  color='inherit'  aria-label="language">
+            <IconButton onClick={loginButton}  color='inherit'  aria-label="language">
             <FaUser color='white' fontSize={25}/>
             </IconButton>
          

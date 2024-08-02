@@ -23,3 +23,9 @@ export const weekDayAndDatefromMs = (date:number)=>{
     
       }
 
+
+      export const  getHoursFromMs = (e:number) =>{
+        e = e / 3600000
+        return (e % 1) === 0 ? e.toFixed(0) : e.toFixed(1);
+      }
+

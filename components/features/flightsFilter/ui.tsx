@@ -6,6 +6,10 @@ import { IoIosArrowDown } from 'react-icons/io'
 import styles from './styles.module.scss';
 import { russianStopName, Stop, StopValue } from '@/components/shared/types/tripsTypes'
 import { usePathname, useSearchParams ,useRouter  } from 'next/navigation'
+import { useAppSelector } from '@/components/shared/lib/store'
+import { selectMaxTime, selectMinDepartureTime, selectMinTime } from '@/components/entities/TripList'
+import { getHoursFromMs } from '@/components/shared/lib/flight/day'
+import { selectMaxDepartureTime } from '@/components/entities/TripList/model/selectors'
 
 
 const accordionStyle = {
@@ -21,12 +25,19 @@ const stopsDefault:Stop[] = [
 export const FlightsFilter = () => {
 
     const [value, setValue] = useState<number[]>([20, 37]);
+    const [time, setTime] = useState<number[]>([0, 0]);
+    const [rangeTime, setRangeTime] = useState<number[]>([0, 0]);
+    const [rangeDepartureTime, setRangeDepartureTime] = useState<number[]>([0, 0]);
     const [checked, setChecked] = React.useState(false);
     const [stops, setStops] = React.useState<Stop[]>(stopsDefault);
     const [uncheckedStops, setUncheckedStops] = React.useState<Stop[]>([]);
     const pathname = usePathname()
     const searchParams = useSearchParams();
     const router = useRouter();
+    const minTime = useAppSelector(selectMinTime)
+    const maxTime = useAppSelector(selectMaxTime)
+    const minDepartureTime = useAppSelector(selectMinDepartureTime)
+    const maxDepartureTime = useAppSelector(selectMaxDepartureTime)
 
     useEffect(() => {
       const currentParams = new URLSearchParams(searchParams.toString());
@@ -40,10 +51,23 @@ export const FlightsFilter = () => {
      
        router.push(`${pathname}?${currentParams.toString()}`);
     }, [uncheckedStops])
+
+    useEffect(() => {
+      setRangeTime([minTime, maxTime])
+      setTime([minTime, maxTime])
+    
+   
+    }, [minTime, maxTime])
+
+
+    
     
     const handleChange = (event: Event, newValue: number | number[]) => {
       setValue(newValue as number[]);
     };
+    const onTimeChange = (event: Event, newValue: number | number[])=>{
+          setTime(newValue as number[])
+    }
 
     const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(event.target.checked);
@@ -114,18 +138,24 @@ export const FlightsFilter = () => {
                             <AccordionDetails>
                                 <div className={styles.outBound}>
                                  <div className={styles.slider_values}>
-                                 <Typography className={styles.text} id="non-linear-slider" gutterBottom>
-                                     {value[0]}
-                                     </Typography>
-                                     -
+                                    <Typography className={styles.text} id="non-linear-slider" gutterBottom>
+                                     {getHoursFromMs(time[0])} часов
+                                     </Typography> 
+
+                                     <span></span>
+
                                      <Typography className={styles.text} id="non-linear-slider" gutterBottom>
-                                     {value[1]}
+                                     {getHoursFromMs(time[1])} часов 
                                      </Typography>
+
                                     </div>   
                                 <Slider
-                            
-                                   value={value}
-                                   onChange={handleChange}
+                                   step={360000}
+                                   min={rangeTime[0]}
+                                   max={rangeTime[1]}
+                                   value={time}
+                                   valueLabelFormat={getHoursFromMs}
+                                   onChange={onTimeChange}
                                    valueLabelDisplay="auto"
                       
                                 />

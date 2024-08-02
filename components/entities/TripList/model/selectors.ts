@@ -28,7 +28,7 @@ export const selectMaxTime = createSelector(
     (state: ITripListState) => state.maxTime
 )
 
-export const selectMaxDepartureDeTime = createSelector(
+export const selectMaxDepartureTime = createSelector(
     selectBase,
     (state: ITripListState) => state.maxDepartureTime
 )

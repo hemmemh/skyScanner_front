@@ -1,14 +1,14 @@
 "use client"
 import { Title } from '@/components/shared/ui/title'
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, FormControlLabel, Slider, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
 import styles from './styles.module.scss';
 import { russianStopName, Stop, StopValue } from '@/components/shared/types/tripsTypes'
 import { usePathname, useSearchParams ,useRouter  } from 'next/navigation'
 import { useAppSelector } from '@/components/shared/lib/store'
 import { selectMaxTime, selectMinDepartureTime, selectMinTime } from '@/components/entities/TripList'
-import { getHoursFromMs } from '@/components/shared/lib/flight/day'
+import { getHoursAndMinutes, getHoursFromMs } from '@/components/shared/lib/flight/day'
 import { selectMaxDepartureTime } from '@/components/entities/TripList/model/selectors'
 
 
@@ -24,13 +24,21 @@ const stopsDefault:Stop[] = [
 
 export const FlightsFilter = () => {
 
-    const [value, setValue] = useState<number[]>([20, 37]);
-    const [time, setTime] = useState<number[]>([0, 0]);
+
+    const [time, setTime] = useState<number[]>([0, 0])
+    const timeFirstUpdate = useRef(true)
+    const searchParamsFirstUpdate = useRef(true)
+    const departureTimeFirstUpdate = useRef(true)
+    const uncheckedStopsFirstUpdate = useRef(true)
+
+    const [departureTime, setDepartureTime] = useState<number[]>([0, 0]);
+
     const [rangeTime, setRangeTime] = useState<number[]>([0, 0]);
     const [rangeDepartureTime, setRangeDepartureTime] = useState<number[]>([0, 0]);
-    const [checked, setChecked] = React.useState(false);
     const [stops, setStops] = React.useState<Stop[]>(stopsDefault);
     const [uncheckedStops, setUncheckedStops] = React.useState<Stop[]>([]);
+
+
     const pathname = usePathname()
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -40,43 +48,130 @@ export const FlightsFilter = () => {
     const maxDepartureTime = useAppSelector(selectMaxDepartureTime)
 
     useEffect(() => {
-      const currentParams = new URLSearchParams(searchParams.toString());
+      if (searchParamsFirstUpdate.current = false) return
+      searchParamsFirstUpdate.current =  false
+    
+   const timeParam = searchParams.get('time') ? searchParams.get('time')?.split('%2C') : []
+   const departTimeParam = searchParams.get('departureTimeFiltr') ? searchParams.get('departureTimeFiltr')?.split('%2C') : []
+   const stopsParam:StopValue[] | undefined = searchParams.get('stops') ? searchParams.get('stops')?.split('%2C') as StopValue[] : []
 
+   if (timeParam && timeParam.length !== 0) {
+      setTime([+timeParam[0], +timeParam[1]])
+   }
+
+   if (departTimeParam && departTimeParam.length !== 0) {
+    setDepartureTime([+departTimeParam[0], +departTimeParam[1]])
+   }
+
+   if (stopsParam && stopsParam.length !== 0 && uncheckedStopsFirstUpdate.current) {
+
+
+    setUncheckedStops(stops.filter(el=>stopsParam.includes(el.value)))
+    setStops(stops.filter(el=>!stopsParam.includes(el.value)))
+   }
+   
+    }, [searchParams])
+    
+
+    useEffect(() => {
+      const currentParams = new URLSearchParams(searchParams.toString());
+  
       
-      if (uncheckedStops.length > 0) {
-        currentParams.set('stops', uncheckedStops.map(el=>el.value).join('%2C'));
-      }else{
-        currentParams.delete('stops')
+      
+      console.log('uncheckedStopsFirstUpdate', uncheckedStopsFirstUpdate);
+      if (!uncheckedStopsFirstUpdate.current) {
+        console.log('uncheckedStopsFirstUpdate', uncheckedStops);
+        
+        if (uncheckedStops.length > 0) {
+          currentParams.set('stops', uncheckedStops.map(el=>el.value).join('%2C'));
+        }else{
+          currentParams.delete('stops')
+        }
+        router.push(`${pathname}?${currentParams.toString()}`);
       }
      
-       router.push(`${pathname}?${currentParams.toString()}`);
     }, [uncheckedStops])
 
     useEffect(() => {
       setRangeTime([minTime, maxTime])
-      setTime([minTime, maxTime])
+      const timeParam = searchParams.get('time') ? searchParams.get('time')?.split('%2C')  : []
+      
+ if (timeParam?.length === 0) {
+    setTime([minTime, maxTime])
+   }
+
+    
     
    
     }, [minTime, maxTime])
 
 
+    useEffect(() => {
+ 
+      const currentParams = new URLSearchParams(searchParams.toString());
+
+      
+      
+
+
+      if (!timeFirstUpdate.current) {
+        currentParams.set('time', time.join('%2C'));
+        router.push(`${pathname}?${currentParams.toString()}`);
+      }
+
+    
+   
+    }, [time])
+
+
+
+    useEffect(() => {
+ 
+      const currentParams = new URLSearchParams(searchParams.toString());
+      console.log(' departureTimeFirstUpdate',  departureTimeFirstUpdate);
+      if (!departureTimeFirstUpdate.current) {
+        console.log(' departureTimeFirstUpdate',  departureTimeFirstUpdate);
+        currentParams.set('departureTimeFiltr', departureTime.join('%2C'));
+        router.push(`${pathname}?${currentParams.toString()}`);
+      }
+
+    
+   
+    }, [departureTime])
+
+
+
+    useEffect(() => {
+      setRangeDepartureTime([minDepartureTime, maxDepartureTime])
+      const departTimeParam = searchParams.get('departureTimeFiltr') ? searchParams.get('departureTimeFiltr')?.split('%2C')  : []
+      if (departTimeParam?.length === 0) {
+        setDepartureTime([minDepartureTime, maxDepartureTime])
+      }
+      
+    
+   
+    }, [minDepartureTime, maxDepartureTime])
+
+
     
     
-    const handleChange = (event: Event, newValue: number | number[]) => {
-      setValue(newValue as number[]);
-    };
+
     const onTimeChange = (event: Event, newValue: number | number[])=>{
+          timeFirstUpdate.current = false
           setTime(newValue as number[])
     }
 
-    const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setChecked(event.target.checked);
-      };
+    const onDepartureTimeChange = (event: Event, newValue: number | number[])=>{
+      departureTimeFirstUpdate.current = false
+      setDepartureTime(newValue as number[])
+}
 
     const onStopChange = (stop:Stop)=>{
+
       const {name, value } = stop
      const finded = stops.find(el=>el.value === value)
-
+    console.log('gg', finded);
+    
      if (finded) {
       setStops(stops.filter(el=>el.value !== value))
       setUncheckedStops([...uncheckedStops, {name, value}])
@@ -84,7 +179,7 @@ export const FlightsFilter = () => {
       setStops([...stops, {name, value}])
       setUncheckedStops(uncheckedStops.filter(el=>el.value !== value))
      }
-
+      uncheckedStopsFirstUpdate.current = false
 
     }  
 
@@ -110,17 +205,20 @@ export const FlightsFilter = () => {
                                   <div className={styles.text}>Outbound</div>
                                  <div className={styles.slider_values}>
                                  <Typography className={styles.text} id="non-linear-slider" gutterBottom>
-                                     {value[0]}
+                                     { getHoursAndMinutes(departureTime[0])}
                                      </Typography>
                                      -
                                      <Typography className={styles.text} id="non-linear-slider" gutterBottom>
-                                     {value[1]}
+                                     {getHoursAndMinutes(departureTime[1])}
                                      </Typography>
                                     </div>   
                                 <Slider
-                            
-                                   value={value}
-                                   onChange={handleChange}
+                                min={rangeDepartureTime[0]}
+                                max={rangeDepartureTime[1]}
+                                step={30}
+                                   value={departureTime}
+                                   valueLabelFormat={getHoursAndMinutes}
+                                   onChange={onDepartureTimeChange}
                                    valueLabelDisplay="auto"
                       
                                 />

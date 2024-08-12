@@ -1,5 +1,5 @@
 
-import React, { FC } from 'react'
+import React, { FC, memo, useMemo } from 'react'
 import styles from './styles.module.scss';
 import { IoAirplaneSharp } from 'react-icons/io5';
 import { ITrip } from '../../api/trip';
@@ -9,10 +9,9 @@ interface FlightVertData {
   trip:ITrip
 }
 
-export const FlightVertData:FC<FlightVertData> = ({trip}) => {
-console.log('el', trip);
+export const FlightVertData:FC<FlightVertData> = memo(({trip}) => {
 
-  const {start, end,hours,minutes} = msToHoursAndMinutes(+trip.departure_time,+trip.arrival_time)
+  const {start, end,hours,minutes} =  useMemo(()=> msToHoursAndMinutes(+trip.departure_time,+trip.arrival_time), [trip])
   return (
     <div className={styles.body}>
       <div className={styles.hours}>{hours}h{minutes}</div>
@@ -24,4 +23,4 @@ console.log('el', trip);
 
     </div>
   )
-}
+})

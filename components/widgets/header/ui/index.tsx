@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import styles from './styles.module.scss';
 import logo from "@/public/logo.svg";
 import { MdLanguage } from "react-icons/md";
@@ -11,15 +11,18 @@ import { LogIn } from '@/components/features/logIn';
 import { useRouter } from 'next/navigation';
 import { useAppSelector } from '@/components/shared/lib/store';
 import { selectUser } from '@/components/entities/user';
-export const Header = () => {
+import { LanguageChange } from '@/components/features/languageChange';
+import { MySnackBar } from '@/components/shared/ui/snackBar/ui';
+export const Header =memo( () => {
 
    const router =  useRouter()
    const [openLogIn, setOpenLogIn] = useState(false)
+   const [openLanguage, setOpenLanguage] = useState(false)
+   const [snackBarOpen, setSnackBarOpen] = useState(false)
+   const [snackBarMessage, setSnackBarMessage] = useState('')
+ 
    const user = useAppSelector(selectUser)
-   useEffect(() => {
-      console.log('aa', openLogIn);
-      
-   }, [openLogIn])
+
 
    const loginButton = ()=>{
     console.log('user', user);
@@ -30,8 +33,22 @@ export const Header = () => {
       setOpenLogIn(true)
     }
    }
+
+   const languageButton = ()=>{
+
+    setOpenLanguage(true)
+   }
+
+   const lovesButton = ()=>{
+    if (!user) {
+      setSnackBarMessage('не авторизован')
+      setSnackBarOpen(true)
+    }
+    if (user) {
+      router.push('/loves')
+    }
+   }
    
- 
   
   return (
     <div className={styles.header}>
@@ -47,10 +64,10 @@ export const Header = () => {
                 />
             </div>
             <div className={styles.actions}>
-            <IconButton   color='inherit'  aria-label="language">
+            <IconButton onClick={languageButton}  color='inherit'  aria-label="language">
             <MdLanguage color='white' fontSize={25}/>
             </IconButton>
-            <IconButton color='inherit'   aria-label="language">
+            <IconButton onClick={lovesButton} color='inherit'   aria-label="language">
             <MdFavorite color='white' fontSize={25}/>
             </IconButton>
             <IconButton onClick={loginButton}  color='inherit'  aria-label="language">
@@ -64,6 +81,8 @@ export const Header = () => {
                   </div>
                   </div>
       <LogIn value={openLogIn} onChange={setOpenLogIn}/>
+      <LanguageChange value={openLanguage} onChange={setOpenLanguage}/>
+      <MySnackBar open={snackBarOpen} onChange={e=>setSnackBarOpen(e)} horizontal='center' vertical='bottom' message={snackBarMessage}/>
     </div>
   )
-}
+})

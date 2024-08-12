@@ -1,5 +1,5 @@
 'use client'
-import React, { Children, FC, InputHTMLAttributes, MouseEventHandler, ReactEventHandler, ReactNode, Ref, RefAttributes, forwardRef, useEffect, useRef, useState } from 'react'
+import React, { Children, FC, InputHTMLAttributes, MouseEventHandler, ReactEventHandler, ReactNode, Ref, RefAttributes, forwardRef, memo, useCallback, useEffect, useRef, useState } from 'react'
 import styles from './styles.module.scss';
 import clsx from 'clsx';
 import { Input } from '../input';
@@ -9,7 +9,7 @@ import { BiSolidPlaneAlt } from 'react-icons/bi';
 
 interface Autocomplete {
 
-
+  isValid:boolean,
   items:string[]
   className?:string;
   label:string;
@@ -17,7 +17,7 @@ interface Autocomplete {
   onChange:(value:string)=>void
 }
 
-export const Autocomplete:FC<Autocomplete> = ({className = 'default', label, onChange, placeholder = '', items}) => {
+export const Autocomplete:FC<Autocomplete> = memo(({className = 'default', label, onChange, placeholder = '', items, isValid = false}) => {
 
   const [input, setInput] = useState('')
   const [values, setValues] = useState<string[]>(items)
@@ -30,8 +30,10 @@ export const Autocomplete:FC<Autocomplete> = ({className = 'default', label, onC
 
     setInput(event)
     onChange(event)
-    setPopperOpen(false)
   }
+
+
+  
 
   const filterPopper = (value:string)=>{
   
@@ -69,7 +71,7 @@ export const Autocomplete:FC<Autocomplete> = ({className = 'default', label, onC
 
 
 
-  const setPopper = (e:any)=>{
+  const setPopper = useCallback((e:any)=>{
     if (!popperRef.current)  return
     if (!autocompleteRef.current)  return
     const target = e.target as HTMLElement
@@ -91,13 +93,11 @@ export const Autocomplete:FC<Autocomplete> = ({className = 'default', label, onC
   setPopperOpen(false)
    
   
-  
-  
-  }
+  }, [popperRef, autocompleteRef ])
 
 
   return (
-    <div ref={autocompleteRef} className={clsx(styles.case, className, {[styles.active]:popperOpen})} >
+    <div ref={autocompleteRef} className={clsx(styles.case, className, {[styles.active]:popperOpen}, {[styles.inValid]:!isValid})} >
     <div className={styles.case__body}>
     <div className={styles.case__upText}>{label}</div>
           <div >
@@ -106,7 +106,7 @@ export const Autocomplete:FC<Autocomplete> = ({className = 'default', label, onC
                       <div className={clsx(styles.popper__body)}>
                       {filrerValues.length === 0 && <div> нет значений</div>}
                        {filrerValues.map((el, id)=>
-                         <div  className={clsx(styles.popper__item, {[styles.activeItem]:el === input})} onClick={(e)=>valueClick(el)} key={id}>
+                         <div className={clsx(styles.popper__item, {[styles.activeItem]:el === input})} onClick={(e)=>valueClick(el)} key={id}>
                                      
                                            <BiSolidPlaneAlt/>
                                            <div className={styles.popper__text}>{el}</div>
@@ -120,4 +120,4 @@ export const Autocomplete:FC<Autocomplete> = ({className = 'default', label, onC
   
     </div>
   )
-}
+})

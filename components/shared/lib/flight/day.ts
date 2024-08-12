@@ -12,9 +12,8 @@ export const msToHoursAndMinutes=(startDate:number, endDate:number)=>{
     return {start, end, hours, minutes}
 }
 
-
 export const weekDayAndDatefromMs = (date:number)=>{
-    const weekDay = dayjs(date).format('ddd')
+    const weekDay = dayjs(date).day()
     const data = dayjs(date).date()
     const month = dayjs(date).format('MMM')
     const year = dayjs(date).year()
@@ -23,6 +22,17 @@ export const weekDayAndDatefromMs = (date:number)=>{
     
     
       }
+
+      export const monthAndDayFromMs = (date:number)=>{
+   
+        const data = dayjs(date).date()
+        const month = dayjs(date).format('MMM')
+  
+        
+        return `${data} ${month}`
+        
+        
+          }
 
 
       export const  getHoursFromMs = (e:number) =>{

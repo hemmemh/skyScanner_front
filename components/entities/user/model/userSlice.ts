@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {  IUserState } from './types'
 import { logoutUser, verifyUser } from './userThunk'
 import { IUser } from '@/components/shared/api/user'
-import { addOrderReducer, deleteUserReducer, verifyUserReducer } from './extraReducers'
+import { addLovesReducer, addOrderReducer, deleteLovesReducer, deleteUserReducer, verifyUserReducer } from './extraReducers'
 
 
 const initialState: IUserState = {
@@ -30,6 +30,8 @@ const UserSlice = createSlice({
         verifyUserReducer(builder)
         deleteUserReducer(builder)
         addOrderReducer(builder)
+        addLovesReducer(builder)
+        deleteLovesReducer(builder)
     }
 })
 

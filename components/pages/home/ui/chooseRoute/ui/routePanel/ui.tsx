@@ -20,81 +20,45 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { Info, panelInputLabel } from '@/components/shared/types/tripsTypes';
 import { ICity } from '@/components/shared/api/city';
+import { useTranslation } from 'react-i18next';
+import { UseRoutePanel } from '@/components/shared/lib/routePanel/useRoutePanel';
+import { MySnackBar } from '@/components/shared/ui/snackBar/ui';
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
 
-
-
-const infoDefault:Info = {
-  from:'',
-  to:'',
-  seatNumber:1,
-  seatClass: '',
-  sort: 'optimal'
-}
-
-
-
 export const RoutePanel = () => {
-  const useDispatch = useAppDispatch()
+
+  
+  const [snackBarOpen, setSnackBarOpen] = useState(false)
   const router = useRouter()
-  
-
-  const [info, setInfo] = useState<Info>(infoDefault)
-  const [depart, setDepart] = useState<number| null>(dayjs().valueOf())
-  const [returnState, setReturnState] = useState<number| null>(null)
-  const [fromCityList, setFromCityList] = useState<ICity[]>([])
-  const [toCityList, setToCityList] = useState<ICity[]>([])
-  const cityList = useAppSelector(selectCityList)
-
-  useEffect(() => {
-      useDispatch(fetchCityList())
-      useDispatch(fetchSeatClassList())
-  }, [])
-
-  useEffect(() => {
-    setFromCityList(cityList)
-    setToCityList(cityList)
-  }, [cityList])
-  
-  
-
-
-
-
-const onInfoChange = (type:panelInputLabel, value:string | number | ISeatClass)=>{
-  setInfo(prev=>({...prev, [type]:value}))
-}
-
-
-const onSeatChange = (seatNumber:number, seatClass:string)=>{
-  console.log('seatClass', seatClass);
-  
-  onInfoChange('seatNumber',seatNumber) 
-  onInfoChange('seatClass',seatClass) 
-
-}
-
-const onCityChange = (name:string, type:'from' | 'to')=>{
-const item = cityList.find(el=>el.name === name)
-if (item && type === 'from') {
-  info.from = item.uid
-  const newToCityList = cityList.filter(el=>el.uid !== item.uid)
-  setToCityList(newToCityList)
-}
-if (item && type === 'to') {
-  info.to = item.uid
-  const newFromCityList = cityList.filter(el=>el.uid !== item.uid)
-  setFromCityList(newFromCityList)
-}
-
-}
+  const { t } = useTranslation();
+  const {
+    depart,
+    info,
+    returnState,
+    fromCityList, 
+    toCityList, 
+    validation,
+    onSeatChange, 
+     onCityFromChange,
+     onCityToChange,
+     onDepartChange,
+     onReturnChange,
+  checkValidation,
+validationState} = UseRoutePanel()
 
 
 
 const findTrips = ()=>{
-  console.log('info',info);
+  checkValidation(info, depart)
+  console.log(validation);
+  if(!Object.entries(validation.current).every(el=>el[1] === true)){
+    setSnackBarOpen(true)
+    return
+  }
+
+  
   if (returnState) {
     router.push(`flights/${depart}/${returnState}/?from=${info.from}&to=${info.to}&seatNumber=${info.seatNumber}&seatClass=${info.seatClass}&sort=${info.sort}`)
   }else{
@@ -108,13 +72,45 @@ const findTrips = ()=>{
   return (
     <div className={styles.main}>
         <div className={styles.body}>
-          <Autocomplete items={fromCityList.map(el=>el.name)} className={styles.first}  label='откуда' placeholder='Город' onChange={(e:string)=>onCityChange(e, 'from')}/>
-          <Autocomplete items={toCityList.map(el=>el.name)} label='куда' placeholder='Город' onChange={(e:string)=>onCityChange(e, 'to')}/>
-          <DatePicker value={dayjs(depart)} label='отлет' onChange={(e:Dayjs| null)=>setDepart(e?.utc(true).valueOf() ?? null)}/>
-          <DatePicker value={returnState ? dayjs(returnState) : null} label='возврат' onChange={(e:Dayjs | null) => setReturnState(e?.utc(true).valueOf() ?? null)}/>
-          <SeatPicker  onChange={(e)=>onSeatChange(e.seatNumber, e.seatClass)}  className={styles.last} label='класс и количество мест' placeholder='1 место, эконом' />
+          <Autocomplete 
+           isValid={validationState.from} 
+           items={fromCityList.map(el=>el.name)} 
+           className={styles.first}  
+           label={t('chooseRoute.from')} 
+           placeholder={t('chooseRoute.city')} 
+           onChange={onCityFromChange}/>
+
+          <Autocomplete 
+           isValid={validationState.to} 
+           items={toCityList.map(el=>el.name)} 
+           label={t('chooseRoute.to')} 
+           placeholder={t('chooseRoute.city')} 
+           onChange={onCityToChange}/>
+
+          <DatePicker 
+           isValid={validationState.depart} 
+           value={dayjs(depart)} 
+           label={t('chooseRoute.depart')} 
+           onChange={onDepartChange}/>
+
+          <DatePicker 
+           value={returnState ? dayjs(returnState) : null} 
+           label={t('chooseRoute.return')} 
+           onChange={onReturnChange}/>
+
+          <SeatPicker  
+           onChange={(e)=>onSeatChange(e.seatNumber, e.seatClass)}  
+           className={styles.last} label={t('chooseRoute.classAndPlaces')} 
+           placeholder={t('chooseRoute.classAndPlacesPlaceHolder')} />
         </div>
-        <Button onClick={findTrips}   variant="contained">Найти</Button>
+        <Button onClick={findTrips}   variant="contained">{t('chooseRoute.find')}</Button>
+
+        <MySnackBar 
+         onChange={setSnackBarOpen} 
+         open={snackBarOpen} 
+         vertical='bottom' 
+         horizontal='center' 
+         message={'Заполните поля'}/>
     </div>
   )
 }

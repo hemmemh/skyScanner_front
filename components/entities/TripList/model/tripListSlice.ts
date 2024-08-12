@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ITripListState } from './types'
 import { fetchTripList } from './tripListThunk'
 
@@ -10,14 +10,20 @@ const initialState: ITripListState = {
     maxTime:0,
     minDepartureTime:0,
     maxDepartureTime:0,
+    page:1,
     loading: false,
     error: null,
+    allTrips:100,
 }
+
 
 const TripListSlice = createSlice({
     name: 'tripList',
     initialState,
     reducers: {
+        setPage:(state, action: PayloadAction<number>)=>{
+            state.page = action.payload
+        }
     },
     extraReducers: (builder) =>
         builder
@@ -33,6 +39,7 @@ const TripListSlice = createSlice({
                 state.maxTime = action.payload ? action.payload.maxTime : 0
                 state.minDepartureTime = action.payload ? action.payload.minDepartureTime : 0
                 state.maxDepartureTime = action.payload ? action.payload.maxDepartureTime : 0
+                state.allTrips = action.payload ? action.payload.allTrips : 100
                 state.loading = false
                 state.error = null
             })
@@ -43,3 +50,4 @@ const TripListSlice = createSlice({
 })
 
 export default TripListSlice.reducer
+export const { setPage } = TripListSlice.actions

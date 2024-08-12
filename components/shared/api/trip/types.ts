@@ -23,6 +23,7 @@ export interface getAllData {
     trips:ITrip[][] | [ITrip[], ITrip[]][]
     minTime:number
     maxTime:number
+    allTrips:number
     minDepartureTime:number
     maxDepartureTime:number
 }

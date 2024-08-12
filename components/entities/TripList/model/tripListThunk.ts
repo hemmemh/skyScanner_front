@@ -1,6 +1,7 @@
 
 import { getAllTrips } from '@/components/shared/api/trip'
 import { getAllTripsWithReturns } from '@/components/shared/api/trip/trip'
+
 import { Info } from '@/components/shared/types/tripsTypes'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 

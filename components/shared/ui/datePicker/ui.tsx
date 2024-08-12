@@ -1,5 +1,5 @@
 'use client'
-import React, { Children, FC, InputHTMLAttributes, MouseEventHandler, ReactEventHandler, ReactNode, Ref, RefAttributes, forwardRef, useEffect, useRef, useState } from 'react'
+import React, { Children, FC, InputHTMLAttributes, MouseEventHandler, ReactEventHandler, ReactNode, Ref, RefAttributes, forwardRef, memo, useCallback, useEffect, useRef, useState } from 'react'
 import styles from './styles.module.scss';
 import clsx from 'clsx';
 import { Input } from '../input';
@@ -7,6 +7,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { DateCalendar } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { IoIosClose } from 'react-icons/io';
+import { useTranslation } from 'react-i18next';
 
 
 interface Autocomplete {
@@ -14,16 +15,18 @@ interface Autocomplete {
   value?:Dayjs | null
   className?:string;
   label?:string
+  isValid?:boolean
   onChange:(value:Dayjs | null)=>void
 }
 
-export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, label, value = dayjs()}) => {
+export const DatePicker:FC<Autocomplete> = memo(({className = 'default', onChange, label, value = dayjs(), isValid = true}) => {
 
   const [day, setDay] = useState<Dayjs | null>(value)
   const [calendarOpen, setCalendarOpen] = useState(false)
   const calendarRef = useRef(null)
   const caseRef = useRef(null)
-  
+  const { t } = useTranslation();
+
   const calendarStyle = {
     display:calendarOpen ? 'block' : 'none', 
     boxShadow:'0px 5px 10px 2px rgba(34, 60, 80, 0.2)',
@@ -37,12 +40,9 @@ export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, la
 
     setDay(day)
     onChange(day)
-    console.log('ff');
-    
-    setCalendarOpen(true)
   }
 
-  const closeCalendar = (e:any) =>{
+  const closeCalendar = useCallback ((e:any) =>{
     console.log('ddd', calendarRef.current, caseRef.current);
     if (!calendarRef.current)  return
     if (!caseRef.current)  return
@@ -52,13 +52,7 @@ export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, la
     const calendar = calendarRef.current as HTMLElement
     const datePicker = caseRef.current as HTMLElement
     const close  = datePicker.querySelector(`.${styles.case__reset}`)
-    const dateButton = datePicker.querySelector(`.MuiButtonBase-root`) 
-    console.log('close',target);
     if (!close)  return
-    if(target.classList.contains('MuiButtonBase-root')){
-      setCalendarOpen(false)
-      return
-    }
     
     if (datePicker.contains(target) &&  target !== close && !close.contains(target)) {
       setCalendarOpen(true)
@@ -76,7 +70,7 @@ export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, la
    
   
   
-  }
+  },[calendarRef, caseRef])
 
   useEffect(() => {
   console.log('day', day);
@@ -97,12 +91,12 @@ export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, la
 
 
   return (
-    <div ref={caseRef} className={clsx(styles.case, className, {[styles.active]:calendarOpen})} >
+    <div ref={caseRef} className={clsx(styles.case, className, {[styles.active]:calendarOpen}, {[styles.inValid]:!isValid})} >
     <div className={styles.case__body}>
       <div className={styles.case__info}>
          <div className={styles.case__upText}>{label}</div>
          <div > 
-                      <Input  value={day ? day.format('DD/MM/YYYY') : 'Дата'}/>
+                      <Input  value={day ? day.format('DD/MM/YYYY') :  t('chooseRoute.date')}/>
                       <DateCalendar sx={calendarStyle} ref={calendarRef} onChange={dateClick}/>
          </div> 
       </div>
@@ -113,4 +107,4 @@ export const DatePicker:FC<Autocomplete> = ({className = 'default', onChange, la
   
     </div>
   )
-}
+})

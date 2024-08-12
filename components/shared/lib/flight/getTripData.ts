@@ -44,5 +44,14 @@ export const getTripData = () => {
           return trips[0].departure_city.name
       }
   }
-  return {seatNumber, seatClass, cityName}
+
+  const getQuery = ()=>{
+    const query:any = {} 
+    for (const [key, value] of searchParams.entries()) {
+     query[key] = value
+     console.log(`${key}, ${value}`, searchParams.entries());
+   }
+   return query
+  }
+  return {seatNumber, seatClass, cityName, getQuery}
 }

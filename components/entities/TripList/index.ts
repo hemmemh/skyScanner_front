@@ -1,14 +1,16 @@
 export {
     default as TripReducer,
 } from './model/tripListSlice'
-export { fetchTripList } from './model/tripListThunk'
+export {setPage} from './model/tripListSlice'
+export { fetchTripList, } from './model/tripListThunk'
 export {
     selectTripList,
     selectMinTime,
     selectMaxTime,
     selectMinDepartureTime,
-    selectMaxDepartureDeTime,
-
+    selectMaxDepartureTime,
     selectTripListError,
+    selectPage,
+    selectAllTrips,
     selectTripsListLoading,
 } from './model/selectors'
